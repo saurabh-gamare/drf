@@ -5,8 +5,8 @@ from django.http import HttpResponse, JsonResponse
 # from api.serializers import StudentSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import Product
-from .serializers import ProductSerializer
+from .models import Product, Track, Album
+from .serializers import ProductSerializer, TrackSerializer, AlbumSerializer
 from rest_framework import generics, authentication
 from rest_framework.views import APIView
 from rest_framework import mixins
@@ -54,7 +54,7 @@ def post_request_serializer(request):
     print(request.data)
     print(type(request.data))
     serialized_data = ProductSerializer(data=request.data)
-    # here data keyword should be passed as request.data is a dict
+    # here data keyword should be passed as request.data is a request
     if serialized_data.is_valid(raise_exception=True):
         return Response(serialized_data.data)
 
@@ -397,3 +397,20 @@ class LoginCustomer(APIView):
         # The token returned must be used in headers when calling other APIs
         # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkzNDI1MjQyLCJpYXQiOjE2OTM0MjQ5NDIsImp0aSI6ImM4MGZkNGFkZDIxZDQxZTNhMzU1YWZkNGM5ZGExOTliIiwidXNlcl9pZCI6MzF9.tAVHkXc6ZQSQa9_3FhVXWZqnlC7JWa54hrEd89iPD3Q
         # A prefix named 'Bearer' must be used
+
+
+
+class ListTracks(APIView):
+
+    def get(self, request):
+        instance = Track.objects.all()
+        serializer = TrackSerializer(instance, many=True)
+        return Response(serializer.data)
+    
+
+class ListAlbums(APIView):
+
+    def get(self, request):
+        instance = Album.objects.all()
+        serializer = AlbumSerializer(instance, many=True)
+        return Response(serializer.data)

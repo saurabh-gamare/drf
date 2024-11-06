@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product
+from .models import Product, Track, Album
 from django.contrib.auth.models import User
 from django.core.validators import EmailValidator
 from .user_serializers import UserPublicSerializer
@@ -84,3 +84,30 @@ class LoginSerializer(serializers.Serializer):
 
     username = serializers.CharField(max_length=30)
     password = serializers.CharField(max_length=30)
+
+
+class AlbumDetailSerializer(serializers.Serializer):
+    name = serializers.CharField(read_only=True)
+    artist = serializers.CharField(read_only=True)
+
+
+class TrackSerializer(serializers.ModelSerializer):
+
+    details = AlbumDetailSerializer(source='album', read_only=True)
+
+    class Meta:
+        model = Track
+        fields = '__all__'
+
+
+class AlbumSerializer(serializers.ModelSerializer):
+    album_data = TrackSerializer(many=True, read_only=True)
+    #"album_data" we got from related_name in the models. 
+    # We have done a reverse relationship here.
+
+    class Meta:
+        model = Album
+        fields = '__all__'
+
+
+

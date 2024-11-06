@@ -11,3 +11,22 @@ class Product(models.Model):
     @property
     def sale_price(self):
         return '%.2f' % (float(self.price) * 0.8)
+
+
+####TESTING PURPOSES
+class Album(models.Model):
+    name = models.CharField(max_length=100)
+    artist = models.CharField(max_length=100) 
+
+    def __str__(self):
+        return self.name
+
+
+class Track(models.Model):
+    name = models.CharField(max_length=100)
+    duration = models.CharField(max_length=100)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, 
+                              related_name='album_data')
+    
+    def __str__(self):
+        return self.name
